@@ -1,0 +1,12 @@
+create table schedule (
+    schedule_id     varchar(5)   not null,
+    schedule_date   date,
+    departure_time  varchar(5)  not null,
+    arrive_time     varchar(5)  not null,
+    postcode        varchar(6)  not null,
+    BusID           varchar(5)  not null,
+    SeatID         varchar(10)  not null,
+primary key(schedule_id),
+foreign key(BusID) references bus(BusID),
+foreign key(SeatID) references seat(SeatID)
+);

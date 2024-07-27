@@ -1,0 +1,50 @@
+-- The following settings are assumed for an A4 landscape output
+SET linesize 120
+SET pagesize 35
+
+-- Set the session's date format to dd/mm/yyyy
+ALTER SESSION SET NLS_DATE_FORMAT = 'DD/MM/YYYY';
+
+-- Input parameters
+ACCEPT v_startDate CHAR PROMPT 'Enter the start date: '
+ACCEPT v_endDate CHAR PROMPT 'Enter the end date: '
+ACCEPT v_minSeatsBooked NUMBER FORMAT '999' PROMPT 'Enter the minimum number of seats booked: '
+
+-- Column formatting
+COL PassengerID FORMAT A12 HEADING "Passenger ID"
+COL PassengerName FORMAT A20 HEADING "Passenger Name"
+COL TotalSeatsBooked FORMAT 99999 HEADING "Total Seats Booked"
+
+-- Title configuration
+TTITLE CENTER 'Passenger Seat Booking Analysis' -
+RIGHT 'Page No: ' FORMAT 999 SQL.PNO SKIP 2
+
+COMPUTE SUM LABEL 'Total : ' OF TotalSeatsBooked ON REPORT
+BREAK ON REPORT
+
+-- SQL Query
+SELECT DISTINCT
+    p.PassengerID,
+    p.FirstName AS PassengerName,
+    COUNT(b.SeatID) AS TotalSeatsBooked
+FROM 
+    Passenger p
+JOIN 
+    TicketBooking t ON p.PassengerID = t.PassengerID
+JOIN 
+    Booked_Seats b ON t.Ticket_ID = b.Ticket_ID
+WHERE
+    t.Date_Booked BETWEEN TO_DATE('&v_startDate', 'DD/MM/YYYY') AND TO_DATE('&v_endDate', 'DD/MM/YYYY')
+GROUP BY 
+    p.PassengerID, p.FirstName
+HAVING
+    COUNT(b.SeatID) > &v_minSeatsBooked
+ORDER BY 
+    p.PassengerID;
+
+-- Clear formatting settings
+CLEAR COLUMNS
+CLEAR BREAKS
+CLEAR COMPUTES
+TTITLE OFF
+

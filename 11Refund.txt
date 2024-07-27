@@ -1,0 +1,9 @@
+create table REFUND (
+   Refund_ID          varchar(5) not null,
+   Refund_Amount      number(7, 2),
+   Refund_date        date,
+   Reason             varchar(50),
+   CancellationID     varchar(10) not null,
+primary key(Refund_ID),
+foreign key(CancellationID) references CANCELLATION(CancellationID)
+);

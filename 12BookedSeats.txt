@@ -1,0 +1,8 @@
+create table BOOKED_SEATS(
+	Ticket_ID       varchar(5)  not null,
+	SeatID          VARCHAR(10) not null,
+	Quantity        number (2)  not null,
+primary key(Ticket_ID,SeatID),
+foreign key(Ticket_ID) references ticketbooking(Ticket_ID),
+foreign key(SeatID) references seat(SeatID)
+);

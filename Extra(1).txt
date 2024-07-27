@@ -1,0 +1,36 @@
+-- the following settings is assumed for a A4 landscape output
+SET linesize 120
+SET pagesize 35
+
+-- set to output date in Malaysia date format
+ALTER SESSION SET NLS_DATE_FORMAT = 'dd/mm/yyyy';
+
+-- the substitution variable v_startDate and v_endDate should be DATE data type
+ACCEPT v_startDate DATE FORMAT 'dd/mm/yyyy' PROMPT ' Enter the start date: '
+ACCEPT v_endDate DATE FORMAT 'dd/mm/yyyy' PROMPT ' Enter the end date : '
+
+--Column formatting
+COL Postcode FORMAT 99999 HEADING "Postcode"
+COL TownName FORMAT A20 HEADING "Town Name"
+COL BusID FORMAT A6 HEADING "Bus ID"
+COL schedule_date FORMAT date HEADING "Date"
+COL Arrive_Time FORMAT A12 HEADING "Arrive Time"
+
+--Title configuration
+TTITLE CENTER 'Town Schedule Table' -
+RIGHT 'Page No: ' FORMAT 999 SQL.PNO SKIP 2
+BREAK ON Postcode ON TownName ON BusID skip 1 ON schedule_date 
+
+--SQL Query
+SELECT ROWNUM AS "NO.", T.Postcode, T.TownName, S.schedule_date, S.Arrive_Time, COUNT(B.BusID) AS "Total Bus"
+FROM Town T
+JOIN Schedule S ON T.Postcode = S.Postcode
+JOIN Bus B ON S.BusID = B.BusID
+WHERE S.schedule_date BETWEEN TO_DATE('&v_startDate', 'DD/MM/YYYY') AND TO_DATE('&v_endDate', 'DD/MM/YYYY') AND ROWNUM <= 10
+ORDER BY ROWNUM;
+
+
+CLEAR COLUMNS
+CLEAR BREAKS
+CLEAR COMPUTES
+TTITLE OFF

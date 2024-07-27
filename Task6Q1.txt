@@ -1,0 +1,53 @@
+-- The following settings are assumed for an A4 landscape output
+SET LINESIZE 120
+SET PAGESIZE 40
+
+-- Set the session's date format to dd/mm/yyyy
+ALTER SESSION SET NLS_DATE_FORMAT = 'DD/MM/YYYY';
+
+-- Input parameters
+ACCEPT v_startDate CHAR PROMPT 'Enter the start date: '
+ACCEPT v_endDate CHAR PROMPT 'Enter the end date: '
+
+-- Column formatting
+COL PassengerID FORMAT A12 HEADING "Passenger ID"
+COL PassengerName FORMAT A20 HEADING "Passenger Name"
+COL SeatID FORMAT A10 HEADING "Seat ID"
+COL Ticket_ID FORMAT A12 HEADING "Booking ID"
+COL Date_Booked FORMAT A15 HEADING "Booking Date"
+COL TotalBookings FORMAT 999 HEADING "Total Bookings"
+
+-- Title configuration
+TTITLE CENTER 'Passenger Booking Analysis' -
+RIGHT 'Page No: ' FORMAT 999 SQL.PNO SKIP 2
+BREAK ON PassengerID ON FirstName ON Ticket_ID SKIP 1 ON Date_Booked
+
+-- Compute total
+COMPUTE SUM LABEL 'Total : ' OF TotalBookings ON PassengerID
+BREAK ON PassengerID
+
+-- SQL Query
+SELECT
+    pb.PassengerID,
+    pb.PassengerName,
+    bs.SeatID,
+    tb.Ticket_ID,
+    tb.Date_Booked,
+    COUNT(*) AS TotalBookings
+FROM
+    (SELECT DISTINCT PassengerID, FirstName AS PassengerName FROM Passenger) pb
+JOIN
+    TicketBooking tb ON pb.PassengerID = tb.PassengerID
+JOIN
+    Booked_Seats bs ON tb.Ticket_ID = bs.Ticket_ID
+WHERE
+    tb.Date_Booked BETWEEN TO_DATE('&v_startDate', 'DD/MM/YYYY') AND TO_DATE('&v_endDate', 'DD/MM/YYYY')
+GROUP BY
+    pb.PassengerID, pb.PassengerName, bs.SeatID, tb.Ticket_ID, tb.Date_Booked
+ORDER BY
+    pb.PassengerID, tb.Ticket_ID;
+
+CLEAR COLUMNS
+CLEAR BREAKS
+TTITLE OFF
+

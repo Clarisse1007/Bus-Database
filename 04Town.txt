@@ -1,0 +1,6 @@
+create table TOWN (
+   Postcode           number(6) not null,
+   TownName           varchar(20) not null,
+   PassengerNumber    number(3),
+primary key(Postcode)
+);

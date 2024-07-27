@@ -1,0 +1,12 @@
+create table TICKETBOOKING(
+    Ticket_ID       varchar(5) not null,
+    Date_booked     date,
+    Status          varchar(15),
+    Price           number(4,2),
+    Journey_Detail  varchar(20),
+    SeatID          VARCHAR(10) not null,
+    PassengerID     varchar(4) not null,
+    primary key(Ticket_ID),
+    foreign key(PassengerID) references PASSENGER(PassengerID),
+    foreign key(SeatID) references seat(SeatID)
+);

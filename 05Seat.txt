@@ -1,0 +1,6 @@
+CREATE TABLE seat (
+  SeatID         VARCHAR(10) NOT NULL,
+  SeatNumber     VARCHAR(10),
+  Status         VARCHAR(15),
+  PRIMARY KEY (SeatID)
+);

@@ -1,0 +1,10 @@
+create table DRIVER(
+    DriverID        varchar(5) not null,
+    FirstName       varchar(10),
+    LastName        varchar(10),
+    LicenseNumber   varchar(10),
+    ContactNumber   varchar(15),
+    BusID           varchar(5) not null,
+primary key(DriverID),
+foreign key(BusID) references Bus(BusID)
+);

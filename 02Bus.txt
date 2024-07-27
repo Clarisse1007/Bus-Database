@@ -1,0 +1,9 @@
+create table BUS(
+    BusID        varchar(5)  not null,
+    BusNumber    varchar(7),
+    SeatNumber   number(2),
+    Capacity     number(2),
+    Model        varchar(10),
+    Condition    varchar(10),
+primary key(BusID)
+);

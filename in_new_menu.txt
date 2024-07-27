@@ -1,0 +1,46 @@
+/*
+Sample from ORACLE Sql*Plus reference:
+ACCEPT pswd CHAR PROMPT 'Password: ' HIDE
+ACCEPT salary NUMBER FORMAT '999.99' DEFAULT '000.0' -
+PROMPT 'Enter weekly salary: '
+ACCEPT hired DATE FORMAT 'dd/mm/yyyy' DEFAULT '01/01/2003'-
+PROMPT 'Enter date hired: '
+ACCEPT lastname CHAR FORMAT 'A20' -
+PROMPT 'Enter employee lastname: '
+*/
+
+-- script to insert a record into the menu table
+/* the menu table structure as a reference
+
+create table menu (
+   menu_id		varchar(5)  not null,
+   description		varchar(30) not null,
+   price		number(6,2),
+   date_introduced	date,
+   cat_id		varchar(5),
+   remarks		varchar(50),
+primary key(menu_id),
+foreign key(cat_id) references category(cat_id)
+);
+*/
+
+-- First, change Oracle's default date format to Malaysian date format
+-- The new date format will be maintained until you terminate the session i.e. logout
+
+ALTER SESSION SET NLS_DATE_FORMAT = 'DD/MM/YYYY'; 
+
+cl scr
+PROMPT 'Data entry for MENU table'
+PROMPT
+PROMPT
+
+ACCEPT v_menu_id    char FORMAT 'A5'    PROMPT 'Enter Menu ID:    '
+ACCEPT v_description   char   FORMAT 'A30'        PROMPT 'Enter Description:  '
+ACCEPT v_price      number   FORMAT '9999.99'        PROMPT 'Enter Price: '
+ACCEPT v_date_introduced      date   FORMAT 'dd/mm/yyyy'        PROMPT 'Enter date of Introduced:      '
+ACCEPT v_cat_id   char FORMAT 'A5' PROMPT 'Enter Category ID  : '
+ACCEPT v_remarks     char   FORMAT 'A50'         PROMPT 'Enter Remarks: '
+
+--execute the INSERT statement
+INSERT INTO menu VALUES
+('&v_menu_id','&v_description',&v_price,'&v_date_introduced','&v_cat_id','&v_remarks');

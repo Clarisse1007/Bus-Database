@@ -1,0 +1,10 @@
+create table bus_stop (
+   stop_id         	varchar(6)   not null,
+   stop_Name 	        varchar(60)  not null,
+   facilities_available varchar(15)  not null,
+   BusID                varchar(5)  not null, 
+   postcode		number(6) not null,
+primary key(stop_id),
+foreign key (BusID) references bus(BusID),
+foreign key (postcode) references town(postcode)
+);

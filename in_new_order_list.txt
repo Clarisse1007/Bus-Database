@@ -1,0 +1,44 @@
+/*
+Sample from ORACLE Sql*Plus reference:
+ACCEPT pswd CHAR PROMPT 'Password: ' HIDE
+ACCEPT salary NUMBER FORMAT '999.99' DEFAULT '000.0' -
+PROMPT 'Enter weekly salary: '
+ACCEPT hired DATE FORMAT 'dd/mm/yyyy' DEFAULT '01/01/2003'-
+PROMPT 'Enter date hired: '
+ACCEPT lastname CHAR FORMAT 'A20' -
+PROMPT 'Enter employee lastname: '
+*/
+
+-- script to insert a record into the food_order table
+/* the menu table structure as a reference
+
+create table order_list (
+   order_no	number(7)  not null,
+   menu_id	varchar(5) not null,
+   quantity	number(2),
+   price	number(6,2),
+primary key(order_no,menu_id),
+foreign key(order_no) references food_order(order_no),
+foreign key(menu_id) references menu(menu_id)
+);
+*/
+
+-- First, change Oracle's default date format to Malaysian date format
+-- The new date format will be maintained until you terminate the session i.e. logout
+
+ALTER SESSION SET NLS_DATE_FORMAT = 'DD/MM/YYYY'; 
+
+cl scr
+PROMPT 'Data entry for Order_List table'
+PROMPT
+PROMPT
+
+ACCEPT v_order_no    number FORMAT '9999999' PROMPT 'Enter Order No:    '
+ACCEPT v_menu_id   char FORMAT 'A5'    PROMPT 'Enter Menu ID:    '
+ACCEPT v_quantity      number FORMAT '99'        PROMPT 'Enter Quantity : '
+ACCEPT v_price      number FORMAT '9999.99'        PROMPT 'Enter Price :      '
+
+
+--execute the INSERT statement
+INSERT INTO order_list VALUES
+(&v_order_no,'&v_menu_id',&v_quantity,&v_price);

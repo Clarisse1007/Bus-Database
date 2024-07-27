@@ -1,0 +1,44 @@
+-- The following settings are assumed for an A4 landscape output
+SET LINESIZE 120
+SET PAGESIZE 35
+
+-- Set to output date in Malaysia date format
+ALTER SESSION SET NLS_DATE_FORMAT = 'dd/mm/yyyy';
+
+-- Input parameters
+ACCEPT v_startDate DATE FORMAT 'DD/MM/YYYY' PROMPT 'Enter the start date (DD/MM/YYYY): '
+ACCEPT v_endDate DATE FORMAT 'DD/MM/YYYY' PROMPT 'Enter the end date (DD/MM/YYYY): '
+
+-- Column formatting
+COLUMN PassengerID FORMAT A12 HEADING "Passenger ID"
+COLUMN PassengerName FORMAT A20 HEADING "Passenger Name"
+COLUMN TotalSeatsBooked FORMAT 999 HEADING "Total Seats Booked"
+
+-- Title configuration
+TTITLE CENTER 'Passenger Booking Analysis' -
+RIGHT 'Page No: ' FORMAT 999 SQL.PNO SKIP 2
+
+-- SQL Query to create the view
+CREATE OR REPLACE VIEW VW_PassengerBookingInfo AS
+SELECT DISTINCT
+    p.PassengerID,
+    p.FirstName AS PassengerName,
+    COUNT(b.SeatID) AS TotalSeatsBooked
+FROM 
+    Passenger p
+JOIN 
+    TicketBooking t ON p.PassengerID = t.PassengerID
+JOIN 
+    Booked_Seats b ON t.Ticket_ID = b.Ticket_ID
+WHERE
+    t.Date_Booked BETWEEN TO_DATE('&v_startDate', 'DD/MM/YYYY') AND TO_DATE('&v_endDate', 'DD/MM/YYYY')
+GROUP BY 
+    p.PassengerID, p.FirstName
+HAVING
+    COUNT(DISTINCT b.SeatID) > &v_minSeatsBooked;
+
+-- Clear formatting settings
+CLEAR COLUMNS
+CLEAR BREAKS
+CLEAR COMPUTES
+TTITLE OFF;

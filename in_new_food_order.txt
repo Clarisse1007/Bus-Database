@@ -1,0 +1,52 @@
+/*
+Sample from ORACLE Sql*Plus reference:
+ACCEPT pswd CHAR PROMPT 'Password: ' HIDE
+ACCEPT salary NUMBER FORMAT '999.99' DEFAULT '000.0' -
+PROMPT 'Enter weekly salary: '
+ACCEPT hired DATE FORMAT 'dd/mm/yyyy' DEFAULT '01/01/2003'-
+PROMPT 'Enter date hired: '
+ACCEPT lastname CHAR FORMAT 'A20' -
+PROMPT 'Enter employee lastname: '
+*/
+
+-- script to insert a record into the food_order table
+/* the menu table structure as a reference
+
+create table food_order (
+   order_no		number(7) not null,
+   order_date		date,
+   cust_no		number(7),
+   staff_no		number(4),
+   total_items		number(2),
+   food_amount		number(7,2),
+   SST			number(6,2),
+   service_charge	number(6,2),
+primary key(order_no),
+foreign key(cust_no)  references customer(cust_no),
+foreign key(staff_no) references staff(staff_id)
+);
+*/
+
+-- First, change Oracle's default date format to Malaysian date format
+-- The new date format will be maintained until you terminate the session i.e. logout
+
+ALTER SESSION SET NLS_DATE_FORMAT = 'DD/MM/YYYY'; 
+
+cl scr
+PROMPT 'Data entry for Food_Order table'
+PROMPT
+PROMPT
+
+ACCEPT v_order_no    number FORMAT '9999999' PROMPT 'Enter Order No:    '
+ACCEPT v_order_date   date   FORMAT 'dd/mm/yyyy'        PROMPT 'Enter Order Date:  '
+ACCEPT v_cust_no      number FORMAT '9999999'        PROMPT 'Enter Customer No. : '
+ACCEPT v_staff_no      number FORMAT '9999'        PROMPT 'Enter Staff No. :      '
+ACCEPT v_total_items   number FORMAT '99' PROMPT 'Enter Total Items  : '
+ACCEPT v_food_amount     number FORMAT '99999.99'         PROMPT 'Enter Food Amount : '
+ACCEPT v_SST     number FORMAT '9999.99'         PROMPT 'Enter SST : '
+ACCEPT v_service_charge     number FORMAT '9999.99'         PROMPT 'Service Charge : '
+
+
+--execute the INSERT statement
+INSERT INTO food_order VALUES
+(&v_order_no,'&v_order_date',&v_cust_no,&v_staff_no,&v_total_items,&v_food_amount,&v_SST,&v_service_charge);

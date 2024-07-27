@@ -1,0 +1,8 @@
+create table PASSENGER (
+	PassengerID 	varchar(4) not null,
+	FirstName	varchar(25) not null,
+	LastName 	varchar(30) not null,
+	PhoneNumber 	varchar(20) not null,
+	State	 	varchar(50) not null,
+primary key(PassengerID)
+);

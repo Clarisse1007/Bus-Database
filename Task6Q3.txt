@@ -1,0 +1,47 @@
+-- The following settings are assumed for an A4 landscape output
+SET LINESIZE 120
+SET PAGESIZE 35
+
+-- Set to output date in Malaysia date format
+ALTER SESSION SET NLS_DATE_FORMAT = 'DD/MM/YYYY';
+
+-- Input parameters
+ACCEPT v_startDate CHAR PROMPT 'Enter the start date: '
+ACCEPT v_endDate CHAR PROMPT 'Enter the end date: '
+
+-- Column formatting
+COL PassengerID FORMAT A12 HEADING "PassengerID"
+COL FirstName FORMAT A30 HEADING "PassengerName"
+COL TotalBookings FORMAT 999 HEADING "TotalBookings"
+
+-- Title configuration
+TTITLE CENTER 'Passenger Analysis' -
+RIGHT 'Page No: ' FORMAT 999 SQL.PNO SKIP 2
+
+-- Compute total
+COMPUTE SUM LABEL 'Grand Total : ' OF TotalBookings ON REPORT
+BREAK ON REPORT;
+
+-- SQL Query
+SELECT 
+    p.PassengerID,
+    p.FirstName,
+    COUNT(DISTINCT t.Ticket_ID) AS TotalBookings
+FROM 
+    Passenger p
+JOIN 
+    TicketBooking t ON p.PassengerID = t.PassengerID
+WHERE
+    t.Date_Booked BETWEEN TO_DATE('&v_startDate', 'DD/MM/YYYY') AND TO_DATE('&v_endDate', 'DD/MM/YYYY')
+GROUP BY 
+    p.PassengerID, p.FirstName
+HAVING 
+    COUNT(DISTINCT t.Ticket_ID) > 1
+ORDER BY
+    p.PassengerID;
+
+-- Clear formatting settings
+CLEAR COLUMNS
+CLEAR BREAKS
+CLEAR COMPUTES
+TTITLE OFF
